@@ -1,0 +1,5 @@
+auto wlan0
+iface wlan0 inet6 manual
+    wireless-channel 1
+    wireless-essid BDR-mesh
+    wireless-mode ad-hoc

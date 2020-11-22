@@ -1,0 +1,21 @@
+---
+- name: install b.a.t.m.a.n-adv kernel module and batctl
+  apt:
+    name: "{{ batman_packages }}"
+    state: present
+    update_cache: yes
+  register: dependencies
+
+- name: configure batman module to load on system boot
+  template:
+    src: batman-adv.module.conf.j2
+    dest: /etc/modules-load.d/batman-adv.conf
+
+- name: Reboot the machine
+  reboot:
+  when: dependencies.changed
+
+- name: load batman module
+  modprobe:
+    name: "batman-adv"
+    state: present

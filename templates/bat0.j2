@@ -1,0 +1,10 @@
+auto bat0    
+{% if inventory_hostname in groups['dhcp'] %}
+iface bat0 inet static
+    address {{ dhcp_server_address }}
+    netmask 255.255.255.0
+    pre-up /usr/sbin/batctl if add {{ batman_interface }}
+{% else %}
+iface bat0 inet dhcp
+    pre-up /usr/sbin/batctl if add {{ batman_interface }}
+{% endif %}

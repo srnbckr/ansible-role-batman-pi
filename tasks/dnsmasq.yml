@@ -1,0 +1,19 @@
+---
+- name: Install dnsmasq dependencies on DHCP server node
+  apt:
+    name: "{{ dnsmasq_packages }}"
+    state: present
+    update_cache: yes
+
+- name: Create dnsmasq configuration file
+  template:
+    src: dnsmasq.conf.j2
+    dest: /etc/dnsmasq.conf
+  register: dnsmasq_config
+
+- name: Restart dnsmasq service
+  systemd:
+    name: dnsmasq
+    enabled: yes
+    state: restarted
+  when: dnsmasq_config.changed

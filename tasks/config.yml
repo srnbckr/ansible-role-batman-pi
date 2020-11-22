@@ -1,0 +1,26 @@
+---
+- name: Unblock WiFi interface on newly deployed RPIs
+  command: rfkill unblock 0
+
+- name: Create wlan0 network configuration file
+  template:
+    src: wlan0.j2
+    dest: /etc/network/interfaces.d/wlan0
+  register: wlan0_config
+
+- name: Create bat0 network configuration file
+  template:
+    src: bat0.j2
+    dest: /etc/network/interfaces.d/bat0
+  register: bat0_config
+
+- name: Append denyinterfaces to dhcpd.conf
+  lineinfile:
+    path: /etc/dhcpcd.conf
+    line: 'denyinterfaces wlan0'
+
+- name: Restart network
+  service:
+    name: networking
+    state: restarted
+  when: wlan0_config.changed or bat0_config.changed

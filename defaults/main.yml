@@ -1,0 +1,23 @@
+---
+# defaults file for ansible-role-batman
+
+#
+# B.A.T.M.A.N-adv variables
+#
+batman_packages:
+  - batctl
+
+batman_interface: wlan0
+wifi_mesh_name: BDR-mesh
+
+#
+# DHCP variables
+#
+dnsmasq_packages:
+  - dnsmasq
+
+external_dns_server: 8.8.8.8
+batman_dhcp_interface: bat0
+# must match with dhcp range
+dhcp_server_address: 10.240.1.1
+dhcp_range: "10.240.1.10,10.240.1.100,6h"

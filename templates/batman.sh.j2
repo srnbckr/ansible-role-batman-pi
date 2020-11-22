@@ -1,0 +1,59 @@
+#!/bin/sh
+
+INTERFACE=ens3
+MESH_IP={{ mesh_ip }}
+
+get_mac_addr() {
+    echo $(cat /sys/class/net/$1/address)
+}
+
+mac_to_ipv6_ll() {
+    IFS=':'; set $1; unset IFS
+    echo "fe80::$(printf %02x $((0x$1 ^ 2)))$2:${3}ff:fe$4:$5$6"
+}
+
+gateway () {
+    modprobe batman-adv
+    batctl if add $INTERFACE
+    #batctl ra BATMAN_V 
+    batctl gw_mode server
+
+    #sudo sysctl -w net.ipv4.ip_forward=1
+    # This sets up routing between the mesh network (bat0) and the internet network (eth0)
+    #sudo iptables -t nat -A POSTROUTING -o $INET_NETWORK -j MASQUERADE
+    #sudo iptables -A FORWARD -i $INET_NETWORK -o bat0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+    #sudo iptables -A FORWARD -i bat0 -o $INET_NETWORK -j ACCEPT
+
+    #sudo ifconfig $WIFI_INTERFACE up
+    mac_addr=$(get_mac_addr $INTERFACE)
+    ipv6_ll=$(mac_to_ipv6_ll $mac_addr)
+
+    ifconfig bat0 up
+    ip link set bat0 address $mac_addr                                                                                                                                                                
+    ip -6 addr add $ipv6_ll/64 dev bat0   
+    ifconfig bat0 $MESH_IP
+
+}
+
+client () {
+    modprobe batman-adv
+    #batctl ra BATMAN_V 
+    batctl if add $INTERFACE
+    ifconfig bat0 mtu 1468
+    batctl gw_mode client 
+
+    #sudo ifconfig $WIFI_INTERFACE up
+    mac_addr=$(get_mac_addr $INTERFACE)
+    ipv6_ll=$(mac_to_ipv6_ll $mac_addr)
+    ifconfig bat0 up
+    ip link set bat0 address $mac_addr                                                                                                                                                                
+    ip -6 addr add $ipv6_ll/64 dev bat0
+    ifconfig bat0 $MESH_IP
+}
+
+if [ -n "$1" ]; then
+  $1
+else
+  echo "Please run with either <client/gatway>"
+  exit 1
+fi

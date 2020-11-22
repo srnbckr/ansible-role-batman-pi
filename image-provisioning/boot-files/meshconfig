@@ -1,0 +1,9 @@
+# Interface used for batman
+WIFI_INTERFACE=wlan0
+# Interface with internet connectivity, used on gateway nodes
+INET_NETWORK=eth0
+# DHCP range
+DHCP_RANGE="10.240.1.10,10.240.1.100,6h"
+GATEWAY_IP="10.240.1.1/24"
+# dns server
+EXTERNAL_DNS="8.8.8.8"
