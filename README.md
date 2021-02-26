@@ -4,6 +4,7 @@ ansible-role-batman-pi
 This ansible role creates a mesh network based on the B.A.T.M.A.N.-adv protocol on a set of Raspberry Pi's.
 It further installs a DHCP server on one of the nodes to provide dynamic IP addresses in the mesh.
 
+
 Usage
 ------------
 Install ansible via pip:
@@ -13,6 +14,9 @@ Install ansible via pip:
 On Ubuntu, also install sshpass to enable password usage in Ansible:
 
     sudo apt-get install sshpass
+
+Install ansible-galaxy dependencies
+    ansible-galaxy install -r requirements.yaml
 
 Adjust the inventory file and add one of the nodes to the `dhcp` group , i.e.
 
@@ -27,4 +31,6 @@ Adjust the inventory file and add one of the nodes to the `dhcp` group , i.e.
 Adjust variables in `defaults/main.yml` and run the playbook with:
 
     ansible-playbook -i inventory install-mesh.yml
+
+In case the mesh IPs should be configured manually, leave the `dhcp` group empty, set `manual_ip: "true"`
 

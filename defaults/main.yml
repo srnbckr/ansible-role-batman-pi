@@ -10,6 +10,8 @@ batman_packages:
 batman_interface: wlan0
 wifi_mesh_name: BDR-mesh
 
+manual_ip: "false" # set this to true and create "mesh_ip" variables in inventory for manual setting of mesh ips
+
 #
 # node exporter variables
 #
