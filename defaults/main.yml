@@ -11,6 +11,12 @@ batman_interface: wlan0
 wifi_mesh_name: BDR-mesh
 
 #
+# node exporter variables
+#
+node_exporter_version: 1.0.1
+node_exporter_install_dir: "/usr/local/bin"
+
+#
 # DHCP variables
 #
 dnsmasq_packages:

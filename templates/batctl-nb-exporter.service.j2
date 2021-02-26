@@ -1,0 +1,11 @@
+[Unit]
+Description=Export batman-adv neighbor quality metrics
+After=network-online.target
+
+[Service]
+ExecStart=/bin/bash -c "/opt/batctl-exporter/neighbors.sh"
+Restart=always
+RestartSec=3s
+
+[Install]
+WantedBy=multi-user.target

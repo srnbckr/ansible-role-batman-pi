@@ -6,6 +6,9 @@
 - name: Configure B.A.T.M.A.N.-adv
   include_tasks: config.yml
 
+- name: Install custom batman exporter
+  include_tasks: exporter.yml
+
 - name: Install and configure dnsmasq as DHCP server for the mesh
   include_tasks: dnsmasq.yml
   when: inventory_hostname in groups['dhcp']|default([])

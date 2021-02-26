@@ -1,0 +1,64 @@
+---
+- name: create exporter directory
+  file:
+    path: /opt/batctl-exporter
+    state: directory
+
+- name: create promfile directory
+  file:
+    path: /var/lib/node_exporter/textfiles
+    state: directory
+
+- name: copy neighbors.sh
+  copy:
+    src: neighbors.sh
+    dest: /opt/batctl-exporter/neighbors.sh
+    owner: root
+    group: root
+    mode: +x
+
+- name: copy stats.sh
+  copy:
+    src: stats.sh
+    dest: /opt/batctl-exporter/stats.sh
+    owner: root
+    group: root
+    mode: +x
+
+- name: create systemd service to run neighbors.sh script on boot
+  template:
+    src: batctl-nb-exporter.service.j2
+    dest: /etc/systemd/system/batctl-nb-exporter.service
+    owner: root
+    group: root
+  register: service_changed
+
+- name: enable batctl-nb-exporter.service
+  systemd:
+    name: batctl-nb-exporter.service
+    state: started
+    enabled: yes
+
+- name: create systemd service to run batctl-stat-exporter.service on boot
+  template:
+    src: batctl-stat-exporter.service.j2
+    dest: /etc/systemd/system/batctl-stat-exporter.service
+    owner: root
+    group: root
+
+- name: enable batctl-stat-exporter.service
+  systemd:
+    name: batctl-stat-exporter.service
+    state: started
+    enabled: yes
+
+- name: reload systemd service
+  command: systemctl daemon-reload
+  when: service_changed
+
+- name: restart systemd service
+  systemd:
+    name: batctl-nb-exporter.service
+    state: restarted
+    enabled: yes
+  when: service_changed

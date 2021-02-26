@@ -1,0 +1,10 @@
+[Unit]
+Description=Export batman-adv interface statistics
+
+[Service]
+ExecStart=/bin/sh -c "/opt/batctl-exporter/stats.sh"
+Restart=always
+RestartSec=3s
+
+[Install]
+WantedBy=multi-user.target
